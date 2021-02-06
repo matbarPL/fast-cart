@@ -1,5 +1,5 @@
 ---
-title: "Rules that can be found inside shopping cart. How to quickly measure transactions relationships?"
+title: "Rules that can be found inside the shopping cart. How to quickly measure transactions relationships?"
 author: "Mateusz Baryła"
 date: "06.02.2021"
 output:
@@ -36,15 +36,15 @@ knitr::opts_chunk$set(plain.ascii = FALSE,
 
 During last year a retail optimization has gained a lot of attention in 
 the data science community. The COVID-19 pandemic resulted in restrictions
-that brought restrictions that changed a behavior of customers. Retail 
+that brought restrictions that changed the behavior of customers. The retail 
 industry forced the closure of physical stores. "The Next Normal" requires 
 adaptation to new requirements and the winners are these retailers that 
-priorities online retail. For instance in United States, e-commerce availability
+priorities online retail. For instance in the United States, e-commerce availability
 and hygiene caused 17 percent of consumers to leave their primary store. One
-of the American retailers, Instacart has already adressed issue of optimizing
+of the American retailers, Instacart has already addressed issue of optimizing
 e-commerce and released prediction competition on kaggle with several data sets [@kaggle]. 
 **Instacart** is an online American retailer that uses advanced analytics algorithms
-to provide best experience for their customers. 
+to provide the best experience for their customers. 
 
 # Dataset preprocessing
 
@@ -78,9 +78,9 @@ trans <-
 
 ## Preprocessing 
 
-A transactional data set is not very easy in interpretation in current format.
-As for now data set contains a lot of ids which are not very interpretable.
-A decision has been made to perform several transformation which will
+A transactional data set is not very easy to handle in current format.
+Data set contains a lot of ids that are not very interpretable.
+A decision has been made to perform several transformations which will
 result in transactional data.
 
 ```{r}
@@ -114,8 +114,8 @@ order_hour_of_day <-
 order_hour_of_day %>% kable_head
 ```
 
-Above three mapping tables have been created. First two ones are self explanatory,
-for hour of the day six time periods have been assigned for further analysis.
+Above three mapping tables have been created. The first two ones are self-explanatory,
+for an hour of the day, six time periods have been assigned for further analysis.
 
 ```{r}
 trans_for_ar <-
@@ -134,7 +134,7 @@ trans_for_ar <-
 Transactions are combined in one big dataframe, id columns are removed. Columns
 that are also redundant in terms of analysis is eval_set. Since the chosen 
 data set is very large and only a sample of it has been taken into account the 
-column days_since_prior_order does not make a lot of sense since as for now not 
+column days_since_prior_order does not make a lot of sense since as of now not 
 every user has order number 1 associated. Therefore there is a decision to omit 
 this column as well order_number.
 
@@ -151,11 +151,11 @@ trans_for_viz <- as(trans_for_ar %>% select(product_name, aisle, department), "t
 
 The final transactional dataframe is made of the following attributes:
 
-* order_id - needed for an unique transaction specification
+* order_id - needed for a unique transaction specification
 * product_name - full product name
 * aisle - aisle name that identifies, where the product belongs inside the store
 * department - there are 21 department names in the store
-* dow_name - identifies day of week when order has been made
+* dow_name - identifies a day of week when an order has been made
 * reorder_name - whether the product has been reordered or not
 * time_of_day - artificially created time of the day based on column value specification
 * user_name - artificial user name assigned for easier identification than original user_id
@@ -164,7 +164,7 @@ The final transactional dataframe is made of the following attributes:
 
 ## General view
 
-Association rules are often used for reducing number of transactions in the 
+Association rules are often used for reducing a number of transactions in the 
 databases where each row is coded by binary attributes. There is no need for 
 them to be trained nor to be labeled beforehand. Most common 
 applications are found in the market basket analysis, discovering interesting patterns of 
@@ -172,10 +172,10 @@ DNA and protein sequences, common patterns of behavior can be found for
 customers that proceed customers dropping their cell phone operator.
 
 During transactional data analysis the technique of association rules
-and mining frequent itemsets plays an  important role for retail basket analysis.
+and mining frequent itemsets plays an  important role in retail basket analysis.
 This technique is especially useful in mining patterns inside large databases.
 What is the most frequently used are such statistics as frequent itemsets,
-maximal frequent itemsets, closed frequent itemsets and association rules.
+maximal frequent itemsets, closed frequent itemsets, and association rules.
 
 *Definition:*
 
@@ -224,7 +224,7 @@ rules.trans<-apriori(trans, parameter=list(supp=0.1, conf=0.5),
 ```
 
 <br/><br/>
-Mined rules are specified with two threshold, with minima support 0.1 
+Mined rules are specified with two thresholds, with minima support 0.1 
 and minimal confidence 0.5.
 
 
@@ -242,7 +242,7 @@ kableRules(rules.trans, "lift")
 
 <br/><br/>
 What is definitely interesting is the dependency between reordering 
-and shopping food care.
+and shopping for food care.
 
 
 ```{r}
@@ -270,7 +270,7 @@ kableRules(rules.Senior.hours, "confidence")
 ```
 
 <br/><br/>
-As documentation claims rule that contain empty bracket means that no matter what other items are involved the item
+As documentation claims rule that contain empty bracket means that no matter what other items have been chosen the item
 in the rhs will be chosen with the level of confidence which is equal to support.
 
 ## Question 2
@@ -287,9 +287,9 @@ kableRules(rules.Senior.hours, "lift")
 
 <br/><br/>
 We can clearly see that there is no difference for senior hours with ordering by
-confidence and by lift. Given these metrics we spot that mostly beverages are chosen,
+confidence and by lift. Given these metrics we spot that most beverages are chosen,
 people have tendency to use Senior hours on Tuesdays. Others need additional coffeine.
-It is clear that there are no aisle selected such as "eye ear care", "digestion"
+It is clear that there are no aisles selected such as "eye ear care", "digestion"
 which might suggest that these hours are often used by people with some serious disorders.
 Let's try now to check what is the profile of these two categories based on hours.
 
@@ -303,13 +303,13 @@ kableRules(rules.muscles.joints.pain.relief, "coverage")
 ```
 
 <br/><br/>
-As we can see senior hours are place in the sixts position but still coverage is very low.
-For other metrics label that indicates these particular hoours has not been
+As we can see senior hours are placed in the sixth position but still coverage is very low.
+For other metrics label that indicates these particular hours has not been
 placed in the top of the resulting table.
 
 ## Question 3
 
-**How the Friday mood affects shoppings?**
+**How the Friday mood affects shooping?**
 
 ```{r}
 rules.friday<-apriori(data=trans,
@@ -320,7 +320,7 @@ kableRules(rules.friday, "confidence")
 ```
 
 <br/><br/>
-Alcohol is definitely placed very high, any sort of of it occurs in all of the
+Alcohol is definitely placed very high, any sort of it occurs in all of the
 top results. Once they add alcohol to the cart they do not reorder it.
 What might be interesting is that people usually buy alcohol
 in the morning. It might be simply because most of the customers on Friday
@@ -337,7 +337,7 @@ trans_for_ar %>%
 ```
 
 <br/><br/>
-The results shows that most of the purchases are being made on Friday afternoon.
+The results show that most of the purchases are being made on Friday afternoon.
 That is interesting why people buy alcohol in the morning rather than in the afternoon.
 What might also be absorbing is that people do not choose any salty food in
 addition to the alcoholic drinks.
@@ -352,7 +352,7 @@ kableRules(rules.lunch.meat, "confidence")
 
 ## Question 4
 
-**Investigate weekdays in terms of some association  metrics.**
+**Investigate weekdays in terms of some association metrics.**
 
 ```{r}
 rules <- apriori(trans, parameter=list(supp=0.001, conf=0.001))
@@ -361,7 +361,7 @@ kableRules(rules.dow.tod, "confidence")
 ```
 
 <br/><br/>
-In terms of first row of rules sorted by confidence 5.8 % of transactions
+In terms of the first row of rules sorted by confidence 5.8 % of transactions
 containing during Night has been made on Thursday. Discussing lift it
 also indicates that the strongest association is between Thursday and Night.
 
@@ -383,7 +383,7 @@ d.jac.i<-dissimilarity(trans.sel, which="items") # Jaccard as default
 plot(hclust(d.jac.i, method="ward.D2"), main="Dendrogram for items")
 ```
 
-The interpretation of the hclust graph is following if we keep three biggest
+The interpretation of the hclust graph is following if we keep the three biggest
 clusters:
 
 * the first group of transactions is formed out of fresh vegetables and fresh fruits
@@ -397,9 +397,9 @@ mostly snacks and beverages which are bought either at night or between
 itemFrequencyPlot(trans_for_viz, topN=10, type="absolute", main="Item Frequency")
 ```
 
-In terms of items frequency it is shown that most of the record has been added
+In terms of item frequency, it is shown that most of the record has been added
 in the afternoon. Customers also focus on keeping in shape since a lot of
-transactions are made inside produce department, others in dairy eggs.
+transactions are made inside the produce department, others in dairy eggs.
 
 ```{r}
 rules_for_viz <- apriori(trans_for_viz, parameter = list(support = 0.001))
@@ -411,15 +411,15 @@ rules_for_viz <- apriori(trans_for_viz, parameter = list(support = 0.001))
 plot(head(rules_for_viz, 30, by = "lift"), method = "paracoord", reorder =TRUE)
 ```
 
-Figure above shows rules with arrows where the width of arrows is linked to support
-and the color confidence contains information about confidence of given rule.
+The figure above shows rules with arrows where the width of arrows is linked to support
+and the color confidence contains information about the confidence of given rule.
 The values of each dimension are connected with each other via line. The y-axis
 is formed via nominal values and the x-axis presents the position in the rule.
 
 # Conclusion
 
-Association rules are very useful technique for mining patterns in large datasets
-due to their algorithms. What is more it can save a lot of time in finding user
+Association rules are a very useful technique for mining patterns in large datasets
+due to their algorithms. What is more, it can save a lot of time in finding user
 preferences and what drives their choices. Most of the useful functionalities
 are implemented either in a form of association rules mining functionalities or graphs.
 For the latter arulesViz [@arulesViz] is widely used where a lot of brand new visualization techniques to
