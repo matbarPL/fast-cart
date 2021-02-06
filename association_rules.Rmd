@@ -1,5 +1,5 @@
 ---
-title: "Rules that inside shopping cart. How to instantly measure transactions relationships?"
+title: "Rules that can be found inside shopping cart. How to quickly measure transactions relationships?"
 author: "Mateusz Baryła"
 date: "06.02.2021"
 output:
@@ -11,7 +11,7 @@ output:
     - -RTS
     toc: yes
     toc_float:
-      collapsed: no
+      collapsed: yes
       smooth_scroll: no
   pdf_document:
     toc: yes
@@ -58,7 +58,7 @@ departments <- read.csv("data\\departments.csv", sep=",")
 order_products_train <- read.csv("data\\order_products__train.csv", sep=",")
 orders <- read.csv("data\\orders.csv", sep=",")
 products <- read.csv("data\\products.csv", sep=",")
-random_names <- read.csv("E:\\GitHub\\unsupervised-learning\\data\\random_names.csv", sep=",")
+random_names <- read.csv("data\\random_names.csv", sep=",")
 ```
 
 Then in order to reduce the number of rows sample fraction out of order products
@@ -177,21 +177,22 @@ This technique is especially useful in mining patterns inside large databases.
 What is the most frequently used are such statistics as frequent itemsets,
 maximal frequent itemsets, closed frequent itemsets and association rules.
 
-Definition:
-Let I = {i1, i2, ..., in} be a set of n binary attributes called items.
-Let D = {t1, t2, ..., tn} be a set of transactions called database. Each
+*Definition:*
+
+Let $I = \{i_1, i_2, ..., i_n \}$ be a set of n binary attributes called items.
+Let $D = \{t_1, t_2, ..., t_n \}$ be a set of transactions called database. Each
 transaction in D has a unique transaction ID and contains a subset of the items
 in I. The sets of items X and Y are called antecedent and consequent of the rule .
 
-The support(X) is defined as the count of transactions that contains item X to
+*The support(X)* is defined as the count of transactions that contains item X to
 the number of transactions in the whole data set.
 
-The confidence of a rule is defined as conf(X => Y) = supp(X u Y)/supp(X).
+*The confidence* of a rule is defined as $conf(X => Y) = \frac{supp(X u Y)}{supp(X)}$.
 
 Another practical measure used for adressing issue of finding too many constraints
-is measure called lift, whihc is defined as lift(X => Y)=supp(X u Y)/(supp(X)supp(Y)).
-The most common interpretation is following, it can be interpreted as the deviation
-of the support of the whole rule from the support expected under independence
+is measure called *lift*, whihc is defined as $lift(X => Y)=\frac{supp(X u Y)}{(supp(X)supp(Y))}$.
+It can be interpreted as the deviation of the support of 
+the whole rule from the support expected under independence
 given the supports of the LHS and the RHS [@JSSv014i15].
 
 ## Associations mining
@@ -222,28 +223,37 @@ rules.trans<-apriori(trans, parameter=list(supp=0.1, conf=0.5),
                      control=list(verbose=FALSE))
 ```
 
+<br/><br/>
 Mined rules are specified with two threshold, with minima support 0.1 
 and minimal confidence 0.5.
 
-```{r}
-kableRules(rules, "confidence")
-```
-
-All the listed items have confidence above 10.
 
 ```{r}
-kableRules(rules, "lift")
+kableRules(rules.trans, "confidence")
 ```
 
-Regarding lift we can 
+<br/><br/>
+All the found associations are pretty obvious.
 
-```{r}
-kableRules(rules, "count")
-```
 
 ```{r}
-kableRules(rules, "support")
+kableRules(rules.trans, "lift")
 ```
+
+<br/><br/>
+What is definitely interesting is the dependency between reordering 
+and shopping food care.
+
+
+```{r}
+kableRules(rules.trans, "count")
+```
+
+<br/><br/>
+Not surprisingly order_id and reorder_name are placed high. Count 
+suggest that afternoon time of the day is the most applicable in terms
+of shopping behavior.
+
 
 # Questions
 
@@ -259,8 +269,8 @@ rules.Senior.hours<-apriori(data=trans,
 kableRules(rules.Senior.hours, "confidence")
 ```
 
-Ones may want to figure out what an empty bracker on the lhs means. As documentation
-claims this rule means that no matter what other items are involved the item
+<br/><br/>
+As documentation claims rule that contain empty bracket means that no matter what other items are involved the item
 in the rhs will be chosen with the level of confidence which is equal to support.
 
 ## Question 2
@@ -275,6 +285,7 @@ rules.Senior.hours<-apriori(data=trans,
 kableRules(rules.Senior.hours, "lift")
 ```
 
+<br/><br/>
 We can clearly see that there is no difference for senior hours with ordering by
 confidence and by lift. Given these metrics we spot that mostly beverages are chosen,
 people have tendency to use Senior hours on Tuesdays. Others need additional coffeine.
@@ -291,6 +302,7 @@ rules.muscles.joints.pain.relief<-apriori(data=trans,
 kableRules(rules.muscles.joints.pain.relief, "coverage")
 ```
 
+<br/><br/>
 As we can see senior hours are place in the sixts position but still coverage is very low.
 For other metrics label that indicates these particular hoours has not been
 placed in the top of the resulting table.
@@ -307,6 +319,7 @@ rules.friday<-apriori(data=trans,
 kableRules(rules.friday, "confidence")
 ```
 
+<br/><br/>
 Alcohol is definitely placed very high, any sort of of it occurs in all of the
 top results. Once they add alcohol to the cart they do not reorder it.
 What might be interesting is that people usually buy alcohol
@@ -323,6 +336,7 @@ trans_for_ar %>%
   mutate(perc = n/sum(n))
 ```
 
+<br/><br/>
 The results shows that most of the purchases are being made on Friday afternoon.
 That is interesting why people buy alcohol in the morning rather than in the afternoon.
 What might also be absorbing is that people do not choose any salty food in
@@ -346,6 +360,7 @@ rules.dow.tod <- subset(rules, subset = lhs %pin% "dow_name=" & rhs %pin% "time_
 kableRules(rules.dow.tod, "confidence")
 ```
 
+<br/><br/>
 In terms of first row of rules sorted by confidence 5.8 % of transactions
 containing during Night has been made on Thursday. Discussing lift it
 also indicates that the strongest association is between Thursday and Night.
@@ -370,6 +385,7 @@ plot(hclust(d.jac.i, method="ward.D2"), main="Dendrogram for items")
 
 The interpretation of the hclust graph is following if we keep three biggest
 clusters:
+
 * the first group of transactions is formed out of fresh vegetables and fresh fruits
 which do belong to produce department,
 * the second group contains transactions made between 12 and 18,
@@ -387,10 +403,11 @@ transactions are made inside produce department, others in dairy eggs.
 
 ```{r}
 rules_for_viz <- apriori(trans_for_viz, parameter = list(support = 0.001))
-plot(rules_for_viz, method = "group")
 ```
 
-```{r}
+<br></br>
+
+```{r, fig.height=12, fig.width=12}
 plot(head(rules_for_viz, 30, by = "lift"), method = "paracoord", reorder =TRUE)
 ```
 
@@ -404,9 +421,9 @@ is formed via nominal values and the x-axis presents the position in the rule.
 Association rules are very useful technique for mining patterns in large datasets
 due to their algorithms. What is more it can save a lot of time in finding user
 preferences and what drives their choices. Most of the useful functionalities
-are implemented either in a form of graphs or association rules mining functionalities.
-For latter arulesViz is widely used where a lot of brand new visualization techniques to
-research association rules has been implemented. The main features of arules in terms
-of association rules are efficient implementation with sparse matrices usage.
+are implemented either in a form of association rules mining functionalities or graphs.
+For the latter arulesViz [@arulesViz] is widely used where a lot of brand new visualization techniques to
+research association rules has been implemented. The main features of arules [@JSSv014i15] 
+in terms of association rules are efficient implementation with sparse matrices usage.
 
 # Bibliography
